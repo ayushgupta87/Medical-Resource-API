@@ -1,5 +1,3 @@
-import datetime
-
 from db import db
 
 
@@ -32,6 +30,32 @@ class AppointmentModel(db.Model):
             'doctor_acceptance': self.accepted
         }
 
+    def appointment_doctor_json(self):
+        return {
+            'patient': self.patient_username,
+            'appointmentDate': self.date,
+            'appointmentTime': self.time,
+            'message': self.message
+        }
+
+    def appointment_doctor_json_2(self):
+        return {
+            'id': self.id,
+            'patient': self.patient_username,
+            'appointmentDate': self.date,
+            'appointmentTime': self.time,
+            'message': self.message,
+            'doctor_acceptance': self.accepted
+        }
+
+    def appointment_patients_json(self):
+        return {
+            'appointmentDate': self.date,
+            'appointmentTime': self.time,
+            'message': self.message,
+            'doctor': self.sent_to
+        }
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -59,3 +83,19 @@ class AppointmentModel(db.Model):
     @classmethod
     def find_by_id_username_doctor(cls, id, sent_to):
         return cls.query.filter_by(id=id, sent_to=sent_to).first()
+
+    @classmethod
+    def find_all_approved_appointments(cls, patient_username):
+        return cls.query.filter_by(patient_username=patient_username, accepted='1').all()
+
+    @classmethod
+    def find_all_non_approved_appointments(cls, patient_username):
+        return cls.query.filter_by(patient_username=patient_username, accepted='0').all()
+
+    @classmethod
+    def find_all_doctor_appointments(cls, sent_to):
+        return cls.query.filter_by(sent_to=sent_to, accepted='1').all()
+
+    @classmethod
+    def find_all_appointments(cls, sent_to):
+        return cls.query.filter_by(sent_to=sent_to, accepted='0').all()

@@ -6,7 +6,8 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from werkzeug.serving import WSGIRequestHandler
 
-from resources.appointment_resources import CreateNewAppointment, DoctorApproval
+from resources.appointment_resources import CreateNewAppointment, DoctorApproval, GetAllApprovedAppointments, \
+    GetAllNonApprovedAppointments, GetMyAppointments, RequestedAppointments
 from resources.user_resources import RegisterUser, LoginUser, RefreshToken, GetCurrentUserDetails
 
 app = Flask(__name__)
@@ -34,7 +35,13 @@ api.add_resource(GetCurrentUserDetails, '/api/currentUser')
 
 # for user, appointment
 api.add_resource(CreateNewAppointment, '/api/requestAppointment')
+api.add_resource(GetAllApprovedAppointments, '/api/myAppointments')
+api.add_resource(GetAllNonApprovedAppointments, '/api/myNonApprovedAppointments')
+
+# for doctors, approve requests
 api.add_resource(DoctorApproval, '/api/requestAppointment/<string:id>')
+api.add_resource(GetMyAppointments, '/api/myUpcomingAppointments')
+api.add_resource(RequestedAppointments, '/api/requestedAppointments')
 
 if __name__ == '__main__':
     from db import db
