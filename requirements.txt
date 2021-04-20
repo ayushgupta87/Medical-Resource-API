@@ -1,0 +1,6 @@
+Flask==1.1.2
+Werkzeug==1.0.1
+flask_jwt_extended
+flask_restful
+flask
+flask_sqlalchemy
