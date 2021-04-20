@@ -1,0 +1,366 @@
+{
+	"info": {
+		"_postman_id": "f83cfb52-29e7-4950-a26e-faf9733cc37f",
+		"name": "Apni Kaksha",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Register New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Access Token is not empty\"] = jsonData.access_token != undefined;",
+									"tests[\"Refresh Token is not empty\"] = jsonData.refresh_token != undefined;",
+									"",
+									"pm.environment.set(\"access_token\", jsonData.access_token);",
+									"pm.environment.set(\"refresh_token\", jsonData.refresh_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"ayush gupta\",\r\n    \"username\" : \"ayush3\",\r\n    \"email_address\" : \"ayushgupta3043@gmail.com\",\r\n    \"password\" : \"12345678\",\r\n    \"confirm_password\"  : \"12345678\",\r\n    \"role\" : \"Patient\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/signUp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Access Token is not empty\"] = jsonData.access_token != undefined;",
+									"tests[\"Refresh Token is not empty\"] = jsonData.refresh_token != undefined;",
+									"",
+									"pm.environment.set(\"access_token\", jsonData.access_token);",
+									"pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"ayush3\",\r\n    \"password\" : \"12345678\",\r\n    \"role\" : \"Patient\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token BOTH",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{refresh_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"ayush\",\r\n    \"password\" : \"12345678\",\r\n    \"role\" : \"Patient\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/refreshToken",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"refreshToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/currentUser",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"currentUser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patient Requests",
+			"item": [
+				{
+					"name": "Create New Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\" : \"2021-04-20\",\r\n    \"time\" : \"15:30\",\r\n    \"message\" : \"eye problem\",\r\n    \"sent_to\" : \"ayush2\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/requestAppointment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"requestAppointment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/myAppointments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"myAppointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Non approved appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/myNonApprovedAppointments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"myNonApprovedAppointments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctor Requests",
+			"item": [
+				{
+					"name": "Approve Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/requestAppointment/12",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"requestAppointment",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My accepted Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/myUpcomingAppointments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"myUpcomingAppointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All requested appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/requestedAppointments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"requestedAppointments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

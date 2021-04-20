@@ -32,7 +32,7 @@ class CreateNewAppointment(Resource):
         fetchUserDetail = GetCurrentUserDetails.get(self)
         user_verify = fetchUserDetail[0]
         if not user_verify['role'] == 'Patient':
-            return {'message': 'Only patient can create new appointments'}, 401  # error, Not admin and exit
+            return {'message': 'Only patient can create new appointments'}, 401
         print(user_verify['username'])
 
         data = _appointment_parser.parse_args()
@@ -89,7 +89,7 @@ class DoctorApproval(Resource):
         fetchUserDetail = GetCurrentUserDetails.get(self)
         user_verify = fetchUserDetail[0]
         if not user_verify['role'] == 'Doctor':
-            return {'message': 'Only doctors can do this task'}, 401  # error, Not admin and exit
+            return {'message': 'Only doctors can do this task'}, 401
         print(user_verify['username'])
 
         if id.isnumeric():
@@ -112,3 +112,71 @@ class DoctorApproval(Resource):
                 print(f'Exception while accepting patient appointment {e}')
                 return {'message': 'Something went wrong'}, 500
         return {'message': 'Requested id not found'}, 400
+
+
+class GetAllApprovedAppointments(Resource):
+    @jwt_required()
+    def get(self):
+        fetchUserDetail = GetCurrentUserDetails.get(self)
+        user_verify = fetchUserDetail[0]
+        if not user_verify['role'] == 'Patient':
+            return {'message': 'Only doctors can do this task'}, 401
+        print(user_verify['username'])
+
+        getAppointments = AppointmentModel.find_all_approved_appointments(user_verify['username'])
+
+        if not getAppointments:
+            return {'message': 'Your no appointments approved'}, 400
+
+        return {'appointments': list(map(lambda x: x.appointment_patients_json(), getAppointments))}, 200
+
+
+class GetAllNonApprovedAppointments(Resource):
+    @jwt_required()
+    def get(self):
+        fetchUserDetail = GetCurrentUserDetails.get(self)
+        user_verify = fetchUserDetail[0]
+        if not user_verify['role'] == 'Patient':
+            return {'message': 'Only doctors can do this task'}, 401
+        print(user_verify['username'])
+
+        getAppointments = AppointmentModel.find_all_non_approved_appointments(user_verify['username'])
+
+        if not getAppointments:
+            return {'message': 'No appointments'}, 400
+
+        return {'appointments': list(map(lambda x: x.appointment_patients_json(), getAppointments))}, 200
+
+
+class GetMyAppointments(Resource):
+    @jwt_required()
+    def get(self):
+        fetchUserDetail = GetCurrentUserDetails.get(self)
+        user_verify = fetchUserDetail[0]
+        if not user_verify['role'] == 'Doctor':
+            return {'message': 'Only doctors can do this task'}, 401
+        print(user_verify['username'])
+
+        getMyAppointments = AppointmentModel.find_all_doctor_appointments(user_verify['username'])
+
+        if not getMyAppointments:
+            return {'message': 'No appointments pending'}, 400
+
+        return {'appointments': list(map(lambda x: x.appointment_doctor_json(), getMyAppointments))}, 200
+
+
+class RequestedAppointments(Resource):
+    @jwt_required()
+    def get(self):
+        fetchUserDetail = GetCurrentUserDetails.get(self)
+        user_verify = fetchUserDetail[0]
+        if not user_verify['role'] == 'Doctor':
+            return {'message': 'Only doctors can do this task'}, 401
+        print(user_verify['username'])
+
+        getMyAppointments = AppointmentModel.find_all_appointments(user_verify['username'])
+
+        if not getMyAppointments:
+            return {'message': 'No appointments'}, 400
+
+        return {'appointments': list(map(lambda x: x.appointment_doctor_json_2(), getMyAppointments))}, 200
